@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Barcodic – Advanced Barcode Generator</title>
 
-<!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
+<!-- Manifest -->
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#0f172a">
 
 <!-- JsBarcode CDN -->
@@ -38,6 +38,7 @@ body.amoled{
   --border:rgba(255,255,255,0.2);
   --text:#ffffff;
 }
+
 body{
   margin:0;
   font-family:system-ui, sans-serif;
@@ -48,9 +49,10 @@ body{
   align-items:center;
   min-height:100vh;
   flex-direction:column;
+  padding:10px;
+  box-sizing:border-box;
 }
 
-/* Splash */
 #splash{
   position:fixed;
   inset:0;
@@ -79,17 +81,17 @@ body{
 @keyframes load{to{width:100%}}
 
 .app{
-  width:95%;
+  width:100%;
   max-width:420px;
-  padding:22px;
-  border-radius:22px;
+  padding:20px;
+  border-radius:20px;
   background:var(--glass);
-  backdrop-filter:blur(18px);
+  backdrop-filter:blur(16px);
   border:1px solid var(--border);
-  box-shadow:8px 8px 20px #0a0f1f, -8px -8px 20px #1b243a;
+  box-shadow:6px 6px 20px #0a0f1f, -6px -6px 20px #1b243a;
   text-align:center;
-  margin-top:20px;
   position:relative;
+  overflow:hidden;
 }
 
 .theme-toggle{
@@ -113,9 +115,10 @@ input, select, button, label{
   width:100%;
   padding:12px;
   margin:6px 0;
-  border-radius:14px;
+  border-radius:12px;
   border:none;
   font-size:14px;
+  box-sizing:border-box;
 }
 input, select{
   background:#1e293b;
@@ -128,11 +131,13 @@ button{
   cursor:pointer;
 }
 svg{
+  width:100%;
+  max-width:100%;
+  height:auto;
   margin-top:15px;
   background:white;
   padding:10px;
   border-radius:12px;
-  width:100%;
 }
 footer{
   margin-top:18px;
@@ -185,31 +190,20 @@ footer{
 </div>
 
 <script>
-window.onload = () => setTimeout(()=>document.getElementById("splash").style.display="none",2000);
+window.onload = ()=>setTimeout(()=>document.getElementById("splash").style.display="none",2000);
 
 /* ----------------- Theme Toggle ----------------- */
 const themes=["light","dark","amoled"];
-let currentThemeIndex=1; // dark mode
+let currentThemeIndex=1;
 const themeToggle=document.getElementById("themeToggle");
-function updateThemeIcon(){
-  const theme=themes[currentThemeIndex];
-  themeToggle.textContent = theme==="light" ? "☀️" : theme==="dark" ? "🌙" : "⚫";
-}
-function applyTheme(){
-  document.body.classList.remove("light","dark","amoled");
-  document.body.classList.add(themes[currentThemeIndex]);
-  updateThemeIcon();
-}
-themeToggle.addEventListener("click",()=>{
-  currentThemeIndex=(currentThemeIndex+1)%themes.length;
-  applyTheme();
-});
+function updateThemeIcon(){themeToggle.textContent=themes[currentThemeIndex]==="light"?"☀️":themes[currentThemeIndex]==="dark"?"🌙":"⚫";}
+function applyTheme(){document.body.classList.remove("light","dark","amoled");document.body.classList.add(themes[currentThemeIndex]);updateThemeIcon();}
+themeToggle.addEventListener("click",()=>{currentThemeIndex=(currentThemeIndex+1)%themes.length;applyTheme();});
 applyTheme();
 
 /* ----------------- Dynamic Labels ----------------- */
 const typeSelect=document.getElementById("type");
 typeSelect.addEventListener("change",updateLabels);
-
 function updateLabels(){
   const type=typeSelect.value;
   const l1=document.getElementById("label1");
@@ -218,7 +212,6 @@ function updateLabels(){
   const f1=document.getElementById("field1");
   const f2=document.getElementById("field2");
   const f3=document.getElementById("field3");
-
   if(type==="EAN13"){l1.textContent="Prefix";l2.textContent="Group Identifier";l3.textContent="Publisher + Title Code";f1.placeholder="978 / 979";f2.placeholder="Language/Region";f3.placeholder="Publisher+Book";}
   else if(type==="EAN8"){l1.textContent="Country Code";l2.textContent="Manufacturer Code";l3.textContent="Product Code";f1.placeholder="Country";f2.placeholder="Maker";f3.placeholder="Item";}
   else if(type==="UPC"){l1.textContent="Number System";l2.textContent="Manufacturer";l3.textContent="Product Code";f1.placeholder="0 or 1";f2.placeholder="Company";f3.placeholder="Item";}
@@ -232,22 +225,18 @@ function updateLabels(){
 }
 updateLabels();
 
-/* ----------------- Barcode Generation ----------------- */
+/* ----------------- Barcode Generator ----------------- */
 document.getElementById("generateBtn").addEventListener("click",()=>{
-  const f1=document.getElementById("field1");
-  const f2=document.getElementById("field2");
-  const f3=document.getElementById("field3");
+  const f1=document.getElementById("field1").value.trim();
+  const f2=document.getElementById("field2").value.trim();
+  const f3=document.getElementById("field3").value.trim();
   const type=document.getElementById("type").value;
-
-  if(!f1 || !f2 || !f3){alert("Input fields missing"); return;}
-  const v1=f1.value.trim(), v2=f2.value.trim(), v3=f3.value.trim();
-  if(!v1){alert("Please fill at least the first field!"); return;}
-  const combined=v1+v2+v3;
-  try{ JsBarcode("#barcode", combined, {format:type,width:2,height:90,displayValue:true}); }
-  catch(e){alert("Failed to generate barcode: "+e.message);}
+  if(!f1){alert("Fill first field!"); return;}
+  try{JsBarcode("#barcode", f1+f2+f3, {format:type,width:2,height:90,displayValue:true});}
+  catch(e){alert("Error: "+e.message);}
 });
 
-/* ----------------- Download Barcode ----------------- */
+/* ----------------- Download ----------------- */
 document.getElementById("downloadBtn").addEventListener("click",()=>{
   const svg=document.querySelector("#barcode");
   if(!svg){alert("No barcode to download"); return;}
@@ -261,8 +250,8 @@ document.getElementById("downloadBtn").addEventListener("click",()=>{
 });
 
 /* ----------------- Service Worker ----------------- */
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(reg=>console.log('SW registered',reg)).catch(err=>console.log('SW failed',err)));
 }
 </script>
 
