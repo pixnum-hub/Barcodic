@@ -3,129 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barcodic – Book Barcode Generator</title>
+<title>Barcodic – Professional Barcode Generator</title>
+
 <meta name="theme-color" content="#0f172a">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/YOUR-REPO-NAME/manifest.json">
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <style>
-:root {
-  --bg-dark:#0f172a;
-  --glass-dark:rgba(255,255,255,0.06);
-  --border-dark:rgba(255,255,255,0.15);
-  --text-dark:#f1f5f9;
-  --bg-light:#e2e8f0;
-  --glass-light:rgba(255,255,255,0.7);
-  --border-light:rgba(0,0,0,0.1);
-  --text-light:#0f172a;
+/* --- SAME UI DESIGN --- */
+:root{
+  --bg-dark:#0f172a; --glass-dark:rgba(255,255,255,.06);
+  --border-dark:rgba(255,255,255,.15); --text-dark:#f1f5f9;
+  --bg-light:#e2e8f0; --glass-light:rgba(255,255,255,.7);
+  --border-light:rgba(0,0,0,.1); --text-light:#0f172a;
 }
-body {
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  background:var(--bg-dark);
-  color:var(--text-dark);
-  transition:.3s;
-}
-.app-frame{
-  width:95%;
-  max-width:420px;
-  padding:25px 20px 40px;
-  border-radius:25px;
-  backdrop-filter:blur(18px);
-  background:var(--glass-dark);
-  border:1px solid var(--border-dark);
-  box-shadow:8px 8px 20px #0b1120,-8px -8px 20px #1e293b;
-  position:relative;
-  text-align:center;
-}
-.toggle-btn{
-  position:absolute;
-  top:15px;
-  right:15px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:none;
-  cursor:pointer;
-  background:linear-gradient(145deg,#1e293b,#0f172a);
-  box-shadow:4px 4px 10px #0b1120,-4px -4px 10px #1e293b;
-  color:#fff;
-  font-size:18px;
-}
-input,textarea,select{
-  width:100%;
-  box-sizing:border-box;
-  padding:12px;
-  margin:8px 0;
-  border-radius:12px;
-  border:1px solid var(--border-dark);
-  background:rgba(255,255,255,0.05);
-  color:inherit;
-  font-size:15px;
-}
-textarea{resize:vertical;}
-button.action{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:12px;
-  border:none;
-  font-size:15px;
-  cursor:pointer;
-  background:linear-gradient(145deg,#a8dadc,#74c69d);
-  color:#0f172a;
-  font-weight:600;
-  box-shadow:0 4px 12px rgba(0,0,0,0.18);
-  transition:all .2s ease;
-}
-button.action:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,0.28);}
-button.action:active{transform:translateY(0);box-shadow:0 3px 8px rgba(0,0,0,0.2);}
-.barcode-item{
-  margin-top:20px;
-  padding:12px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border-dark);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
+body{margin:0;font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;background:var(--bg-dark);color:var(--text-dark);transition:.3s}
+.app-frame{width:95%;max-width:420px;padding:25px 20px 40px;border-radius:25px;backdrop-filter:blur(18px);background:var(--glass-dark);border:1px solid var(--border-dark);box-shadow:8px 8px 20px #0b1120,-8px -8px 20px #1e293b;position:relative;text-align:center}
+.toggle-btn{position:absolute;top:15px;right:15px;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(145deg,#1e293b,#0f172a);color:#fff;font-size:18px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:12px;margin:8px 0;border-radius:12px;border:1px solid var(--border-dark);background:rgba(255,255,255,.05);color:inherit;font-size:15px}
+button.action{width:100%;padding:12px;margin-top:10px;border-radius:12px;border:none;font-size:15px;cursor:pointer;background:linear-gradient(145deg,#a8dadc,#74c69d);color:#0f172a;font-weight:600}
+.barcode-item{margin-top:20px;padding:12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--border-dark);display:flex;flex-direction:column;align-items:center}
 footer{margin-top:25px;font-size:12px;opacity:.8}
-.light{background:var(--bg-light);color:var(--text-light);}
-.light .app-frame{
-  background:var(--glass-light);
-  border:1px solid var(--border-light);
-  box-shadow:8px 8px 20px #cbd5e1,-8px -8px 20px #ffffff;
-}
-.light input,.light textarea,.light select{
-  background:rgba(255,255,255,0.9);
-  border:1px solid var(--border-light);
-}
-.light .toggle-btn{
-  background:linear-gradient(145deg,#e2e8f0,#ffffff);
-  color:#0f172a;
-}
+.light{background:var(--bg-light);color:var(--text-light)}
+.light .app-frame{background:var(--glass-light);border:1px solid var(--border-light)}
+.light input,.light textarea,.light select{background:#fff}
 
-/* SPLASH */
-#splash{
-  position:fixed;inset:0;
-  background:linear-gradient(145deg,#0f172a,#1e293b);
-  display:flex;justify-content:center;align-items:center;
-  z-index:9999;
-  animation:fadeOut 1s ease forwards;
-  animation-delay:2.6s;
-}
-.splash-content{text-align:center;color:#e2e8f0;animation:zoomIn .8s ease;}
-.logo-box{font-size:42px;margin-bottom:12px;opacity:.9;}
-.progress-bar{width:180px;height:6px;margin:18px auto 0;background:rgba(255,255,255,0.15);border-radius:10px;overflow:hidden;}
-.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#a8dadc,#74c69d);animation:loadBar 2s ease forwards;}
-@keyframes zoomIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+/* Splash */
+#splash{position:fixed;inset:0;background:linear-gradient(145deg,#0f172a,#1e293b);display:flex;justify-content:center;align-items:center;z-index:9999;animation:fadeOut 1s ease forwards;animation-delay:2.6s}
+.splash-content{text-align:center;color:#e2e8f0}
+.progress-bar{width:180px;height:6px;margin:18px auto 0;background:rgba(255,255,255,.15);border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#a8dadc,#74c69d);animation:loadBar 2s ease forwards}
 @keyframes fadeOut{to{opacity:0;visibility:hidden}}
 @keyframes loadBar{from{width:0%}to{width:100%}}
 </style>
@@ -133,30 +42,25 @@ footer{margin-top:25px;font-size:12px;opacity:.8}
 
 <body>
 
-<!-- Splash -->
 <div id="splash">
   <div class="splash-content">
-    <div class="logo-box">▦</div>
     <h1>Barcodic</h1>
     <p>Professional Barcode Generator</p>
     <div class="progress-bar"><div class="progress-fill"></div></div>
   </div>
 </div>
 
-<!-- App Frame -->
 <div class="app-frame">
   <button class="toggle-btn" onclick="toggleMode()">🌙</button>
   <h2>Barcodic</h2>
-  <p style="margin-top:-6px;font-size:13px;opacity:.7;">Professional Book Barcode Generator</p>
 
-  <!-- Input with validation -->
   <div style="position:relative;width:100%;">
     <textarea id="barcodeInput" placeholder="Enter codes separated by commas"></textarea>
     <div id="validationStatus" style="position:absolute;top:8px;right:12px;font-size:20px;"></div>
   </div>
 
   <select id="formatSelect">
-    <option value="EAN13">EAN-13 (ISBN Books)</option>
+    <option value="EAN13">EAN-13 (ISBN)</option>
     <option value="EAN8">EAN-8</option>
     <option value="UPC">UPC</option>
     <option value="CODE128">CODE128</option>
@@ -169,9 +73,7 @@ footer{margin-top:25px;font-size:12px;opacity:.8}
   <input type="number" id="barWidth" value="2" min="1" placeholder="Bar Width">
   <input type="number" id="barHeight" value="70" min="40" placeholder="Bar Height">
 
-  <label style="display:flex;align-items:center;gap:8px;font-size:14px;">
-    <input type="checkbox" id="showText" checked> Show Numbers
-  </label>
+  <label><input type="checkbox" id="showText" checked> Show Numbers</label>
 
   <button class="action" id="generateBtn">Generate Barcodes</button>
   <button class="action" id="downloadAllBtn">Download All as ZIP</button>
@@ -181,133 +83,55 @@ footer{margin-top:25px;font-size:12px;opacity:.8}
 </div>
 
 <script>
-/* Dark/Light Mode */
-function toggleMode(){document.body.classList.toggle("light");}
+function toggleMode(){document.body.classList.toggle("light")}
 
-/* Validation Functions */
-function isValidISBN13(isbn){
-  if(!/^\d{13}$/.test(isbn)) return false;
-  if(!(isbn.startsWith("978")||isbn.startsWith("979"))) return false;
-  let sum=0; for(let i=0;i<12;i++){ sum+=parseInt(isbn[i])*(i%2?3:1); }
-  return (10-(sum%10))%10===parseInt(isbn[12]);
-}
+/* Validation */
+function isValidISBN13(isbn){if(!/^\d{13}$/.test(isbn))return false;let s=0;for(let i=0;i<12;i++)s+=isbn[i]*(i%2?3:1);return (10-(s%10))%10==isbn[12]}
+function validateCode(c,t){switch(t){case"EAN13":return isValidISBN13(c);case"EAN8":return/^\d{8}$/.test(c);case"UPC":return/^\d{12}$/.test(c);case"ITF14":return/^\d{14}$/.test(c);case"MSI":case"Pharmacode":return/^\d+$/.test(c);case"CODE39":return/^[0-9A-Z \-.$/+%]*$/.test(c);default:return c.length>0}}
 
-function validateCode(code, type){
-  code = code.trim();
-  if(!code) return false;
-  switch(type){
-    case "EAN13": return isValidISBN13(code);
-    case "EAN8": return /^\d{8}$/.test(code);
-    case "UPC": return /^\d{12}$/.test(code);
-    case "CODE39": return /^[0-9A-Z \-.$/+%]*$/.test(code);
-    case "CODE128": return code.length>0;
-    case "ITF14": return /^\d{14}$/.test(code);
-    case "MSI": return /^\d+$/.test(code);
-    case "Pharmacode": return /^\d+$/.test(code);
-    default: return false;
-  }
-}
-
-/* Elements */
-const inputField = document.getElementById("barcodeInput");
-const formatSelect = document.getElementById("formatSelect");
-const validationStatus = document.getElementById("validationStatus");
-const barWidth = document.getElementById("barWidth");
-const barHeight = document.getElementById("barHeight");
-const showText = document.getElementById("showText");
-const barcodeContainer = document.getElementById("barcodeContainer");
+const inputField=document.getElementById("barcodeInput");
+const formatSelect=document.getElementById("formatSelect");
+const validationStatus=document.getElementById("validationStatus");
+const barcodeContainer=document.getElementById("barcodeContainer");
 let generatedBarcodes=[];
 
-/* Dynamic Validation */
 function updateValidation(){
-  const codes = inputField.value.split(",").map(c=>c.trim()).filter(Boolean);
-  let allValid = true;
-  for(const c of codes){
-    if(!validateCode(c, formatSelect.value)){allValid=false;break;}
-  }
-  validationStatus.textContent = allValid ? "✅" : "❌";
+  const codes=inputField.value.split(",").map(c=>c.trim()).filter(Boolean);
+  validationStatus.textContent=codes.length&&codes.every(c=>validateCode(c,formatSelect.value))?"✅":"❌";
 }
 inputField.addEventListener("input",updateValidation);
 formatSelect.addEventListener("change",updateValidation);
 
-/* Generate Barcodes */
 document.getElementById("generateBtn").onclick=()=>{
-  const raw=inputField.value.trim();
-  if(!raw) return alert("Enter code(s)");
-  const items=raw.split(',').map(i=>i.trim()).filter(Boolean);
-  for(const i of items){ if(!validateCode(i,formatSelect.value)){alert("Invalid code: "+i); return;} }
+  const items=inputField.value.split(',').map(i=>i.trim()).filter(Boolean);
+  if(!items.length) return alert("Enter codes");
+  if(!items.every(i=>validateCode(i,formatSelect.value))) return alert("Invalid code detected");
   barcodeContainer.innerHTML=""; generatedBarcodes=[];
-  for(const text of items){
+  items.forEach(text=>{
     const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-    JsBarcode(svg,text,{
-      format:formatSelect.value,
-      width:+barWidth.value,
-      height:+barHeight.value,
-      displayValue:showText.checked
-    });
-
-    const div=document.createElement("div"); div.className="barcode-item";
-
-    // Labels for type and code
-    const labelType = document.createElement("div");
-    labelType.textContent = "Type: "+formatSelect.value;
-    labelType.style.fontSize="13px"; labelType.style.opacity="0.7"; labelType.style.marginBottom="4px";
-
-    const labelCode = document.createElement("div");
-    labelCode.textContent = "Code: "+text;
-    labelCode.style.fontSize="14px"; labelCode.style.fontWeight="600"; labelCode.style.marginBottom="6px";
-
-    const btn=document.createElement("button"); btn.className="action"; btn.textContent="Download PNG";
+    JsBarcode(svg,text,{format:formatSelect.value,width:2,height:70,displayValue:true});
+    const div=document.createElement("div");div.className="barcode-item";
+    div.innerHTML=`<div style="font-size:13px;opacity:.7">Type: ${formatSelect.value}</div>
+                   <div style="font-weight:600;margin-bottom:6px">Code: ${text}</div>`;
+    const btn=document.createElement("button");btn.className="action";btn.textContent="Download PNG";
     btn.onclick=()=>downloadPNG(svg,text);
-
-    div.append(labelType,labelCode,svg,btn);
-    barcodeContainer.appendChild(div);
+    div.append(svg,btn); barcodeContainer.appendChild(div);
     generatedBarcodes.push({svg,filename:text});
-  }
-};
-
-/* Download Functions */
-function downloadPNG(svg,filename){
-  const data=new XMLSerializer().serializeToString(svg);
-  const img=new Image();
-  img.onload=function(){
-    const canvas=document.createElement("canvas");
-    canvas.width=img.width; canvas.height=img.height;
-    canvas.getContext("2d").drawImage(img,0,0);
-    const link=document.createElement("a");
-    link.href=canvas.toDataURL("image/png");
-    link.download=filename+".png"; link.click();
-  };
-  img.src='data:image/svg+xml;base64,'+btoa(data);
-}
-
-document.getElementById("downloadAllBtn").onclick=()=>{
-  if(!generatedBarcodes.length) return alert("No barcodes generated");
-  const zip=new JSZip(); let done=0;
-  generatedBarcodes.forEach(item=>{
-    const data=new XMLSerializer().serializeToString(item.svg);
-    const img=new Image();
-    img.onload=function(){
-      const canvas=document.createElement("canvas");
-      canvas.width=img.width; canvas.height=img.height;
-      canvas.getContext("2d").drawImage(img,0,0);
-      zip.file(item.filename+".png",canvas.toDataURL("image/png").split(',')[1],{base64:true});
-      if(++done===generatedBarcodes.length){
-        zip.generateAsync({type:"blob"}).then(c=>{
-          const link=document.createElement("a");
-          link.href=URL.createObjectURL(c);
-          link.download="barcodic-barcodes.zip";
-          link.click();
-        });
-      }
-    };
-    img.src='data:image/svg+xml;base64,'+btoa(data);
   });
 };
 
-/* Service Worker for PWA */
+function downloadPNG(svg,name){
+  const img=new Image(); img.onload=function(){
+    const c=document.createElement("canvas");c.width=img.width;c.height=img.height;
+    c.getContext("2d").drawImage(img,0,0);
+    const a=document.createElement("a");a.href=c.toDataURL();a.download=name+".png";a.click();
+  };
+  img.src='data:image/svg+xml;base64,'+btoa(new XMLSerializer().serializeToString(svg));
+}
+
+/* GitHub Pages Service Worker */
 if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js");});
+  window.addEventListener("load",()=>navigator.serviceWorker.register("/YOUR-REPO-NAME/sw.js"));
 }
 </script>
 </body>
