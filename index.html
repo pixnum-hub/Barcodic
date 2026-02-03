@@ -3,126 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barcodic – Book Barcode Generator</title>
+<title>Barcodic – Advanced Barcode Generator</title>
 
+<!-- PWA Manifest -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 
+<!-- JsBarcode CDN -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 
 <style>
+:root{
+  --bg:#0f172a;
+  --glass:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.15);
+  --text:#e2e8f0;
+  --accent:#38bdf8;
+}
+body.light{
+  --bg:#f1f5f9;
+  --glass:rgba(0,0,0,0.05);
+  --border:rgba(0,0,0,0.1);
+  --text:#0f172a;
+}
+body.dark{
+  --bg:#0f172a;
+  --glass:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.15);
+  --text:#e2e8f0;
+}
+body.amoled{
+  --bg:#000000;
+  --glass:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.2);
+  --text:#ffffff;
+}
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#0f172a;
-  color:white;
+  font-family:system-ui, sans-serif;
+  background:var(--bg);
+  color:var(--text);
   display:flex;
   justify-content:center;
   align-items:center;
   min-height:100vh;
+  flex-direction:column;
 }
+
+/* Splash */
+#splash{
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
+}
+.loader{
+  width:150px;
+  height:6px;
+  background:#1e293b;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:15px;
+}
+.loader span{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--accent);
+  animation:load 2s linear forwards;
+}
+@keyframes load{to{width:100%}}
+
 .app{
   width:95%;
   max-width:420px;
-  padding:20px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.1);
+  padding:22px;
+  border-radius:22px;
+  background:var(--glass);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--border);
+  box-shadow:8px 8px 20px #0a0f1f, -8px -8px 20px #1b243a;
   text-align:center;
+  margin-top:20px;
+  position:relative;
 }
-input, select, button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:12px;
-  border:none;
-  font-size:14px;
-}
-button{
-  background:#22c55e;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
-}
-canvas{
-  margin-top:15px;
-  background:white;
-  padding:10px;
-  border-radius:12px;
-}
-.toggle{
+
+.theme-toggle{
   position:absolute;
   top:15px;
   right:15px;
-  width:42px;
-  height:42px;
+  width:46px;
+  height:46px;
   border-radius:50%;
-  background:#1e293b;
+  background:var(--glass);
   display:flex;
   justify-content:center;
   align-items:center;
   cursor:pointer;
+  font-size:22px;
+  box-shadow:4px 4px 12px rgba(0,0,0,0.3), -4px -4px 12px rgba(255,255,255,0.1);
+  user-select:none;
 }
-.light{
-  background:#f1f5f9;
+
+input, select, button, label{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border-radius:14px;
+  border:none;
+  font-size:14px;
+}
+input, select{
+  background:#1e293b;
+  color:white;
+}
+button{
+  background:#4ade80;
   color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+svg{
+  margin-top:15px;
+  background:white;
+  padding:10px;
+  border-radius:12px;
+  width:100%;
+}
+footer{
+  margin-top:18px;
+  font-size:12px;
+  opacity:0.7;
 }
 </style>
 </head>
 
 <body>
-<div class="toggle" onclick="toggleMode()">🌓</div>
+
+<div id="splash">
+  <h1>Barcodic</h1>
+  <div class="loader"><span></span></div>
+</div>
 
 <div class="app">
-  <h2>Barcodic</h2>
+  <div class="theme-toggle" id="themeToggle">🌙</div>
 
-  <input id="title" placeholder="Book Title">
-  <input id="author" placeholder="Author">
-  <input id="isbn" placeholder="ISBN Number">
+  <h2>Barcode Generator</h2>
+
+  <label id="label1">Field 1</label>
+  <input id="field1" placeholder="">
+
+  <label id="label2">Field 2</label>
+  <input id="field2" placeholder="">
+
+  <label id="label3">Field 3</label>
+  <input id="field3" placeholder="">
 
   <select id="type">
-    <option value="EAN13">EAN-13 (ISBN)</option>
-    <option value="CODE128">CODE-128</option>
-    <option value="UPC">UPC</option>
+    <option value="EAN13">EAN-13 (ISBN / Retail)</option>
+    <option value="EAN8">EAN-8 (Small Retail)</option>
+    <option value="UPC">UPC-A (Retail USA/Canada)</option>
+    <option value="UPCE">UPC-E (Compact Retail)</option>
+    <option value="CODE128">CODE-128 (Universal / Logistics)</option>
+    <option value="CODE39">CODE-39 (Industrial)</option>
+    <option value="ITF14">ITF-14 (Cartons / Shipping)</option>
+    <option value="MSI">MSI (Warehouse)</option>
+    <option value="Pharmacode">Pharmacode (Pharma Packaging)</option>
+    <option value="Codabar">Codabar (Libraries / Blood Banks)</option>
   </select>
 
-  <button onclick="generateBarcode()">Generate Barcode</button>
+  <button id="generateBtn">Generate Barcode</button>
+  <button id="downloadBtn">Download</button>
 
   <svg id="barcode"></svg>
+
+  <footer>© Manik Roy 2026. All Rights Reserved.</footer>
 </div>
 
 <script>
-function toggleMode(){
-  document.body.classList.toggle("light");
+window.onload = () => setTimeout(()=>document.getElementById("splash").style.display="none",2000);
+
+/* ----------------- Theme Toggle ----------------- */
+const themes=["light","dark","amoled"];
+let currentThemeIndex=1; // dark mode
+const themeToggle=document.getElementById("themeToggle");
+function updateThemeIcon(){
+  const theme=themes[currentThemeIndex];
+  themeToggle.textContent = theme==="light" ? "☀️" : theme==="dark" ? "🌙" : "⚫";
 }
-
-function generateBarcode(){
-  const isbn = document.getElementById("isbn").value.trim();
-  const type = document.getElementById("type").value;
-
-  if(!isbn){
-    alert("Enter ISBN or code");
-    return;
-  }
-
-  JsBarcode("#barcode", isbn, {
-    format: type,
-    lineColor: "#000",
-    width: 2,
-    height: 80,
-    displayValue: true
-  });
+function applyTheme(){
+  document.body.classList.remove("light","dark","amoled");
+  document.body.classList.add(themes[currentThemeIndex]);
+  updateThemeIcon();
 }
+themeToggle.addEventListener("click",()=>{
+  currentThemeIndex=(currentThemeIndex+1)%themes.length;
+  applyTheme();
+});
+applyTheme();
 
-/* SAFE SERVICE WORKER */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js")
-      .then(reg => console.log("SW registered", reg.scope))
-      .catch(err => console.log("SW failed", err));
-  });
+/* ----------------- Dynamic Labels ----------------- */
+const typeSelect=document.getElementById("type");
+typeSelect.addEventListener("change",updateLabels);
+
+function updateLabels(){
+  const type=typeSelect.value;
+  const l1=document.getElementById("label1");
+  const l2=document.getElementById("label2");
+  const l3=document.getElementById("label3");
+  const f1=document.getElementById("field1");
+  const f2=document.getElementById("field2");
+  const f3=document.getElementById("field3");
+
+  if(type==="EAN13"){l1.textContent="Prefix";l2.textContent="Group Identifier";l3.textContent="Publisher + Title Code";f1.placeholder="978 / 979";f2.placeholder="Language/Region";f3.placeholder="Publisher+Book";}
+  else if(type==="EAN8"){l1.textContent="Country Code";l2.textContent="Manufacturer Code";l3.textContent="Product Code";f1.placeholder="Country";f2.placeholder="Maker";f3.placeholder="Item";}
+  else if(type==="UPC"){l1.textContent="Number System";l2.textContent="Manufacturer";l3.textContent="Product Code";f1.placeholder="0 or 1";f2.placeholder="Company";f3.placeholder="Item";}
+  else if(type==="UPCE"){l1.textContent="Number System";l2.textContent="Manufacturer";l3.textContent="Product Code (Compressed)";f1.placeholder="0 or 1";f2.placeholder="Maker";f3.placeholder="Compressed Item";}
+  else if(type==="CODE128"){l1.textContent="Primary Data";l2.textContent="Batch No.";l3.textContent="Internal Ref";f1.placeholder="Main Data";f2.placeholder="Optional";f3.placeholder="Optional";}
+  else if(type==="CODE39"){l1.textContent="Product ID";l2.textContent="Category";l3.textContent="Serial Number";f1.placeholder="ID";f2.placeholder="Group";f3.placeholder="Serial";}
+  else if(type==="ITF14"){l1.textContent="Packaging Level";l2.textContent="Carton Code";l3.textContent="Item Ref";f1.placeholder="Level";f2.placeholder="Carton";f3.placeholder="Item";}
+  else if(type==="MSI"){l1.textContent="Warehouse Code";l2.textContent="Shelf Code";l3.textContent="Item Number";f1.placeholder="Warehouse";f2.placeholder="Shelf";f3.placeholder="Item";}
+  else if(type==="Pharmacode"){l1.textContent="Drug Code";l2.textContent="Batch";l3.textContent="Pack Ref";f1.placeholder="Drug ID";f2.placeholder="Batch";f3.placeholder="Pack";}
+  else if(type==="Codabar"){l1.textContent="Library/Blood Bank ID";l2.textContent="Category";l3.textContent="Serial";f1.placeholder="ID";f2.placeholder="Group";f3.placeholder="Serial";}
+}
+updateLabels();
+
+/* ----------------- Barcode Generation ----------------- */
+document.getElementById("generateBtn").addEventListener("click",()=>{
+  const f1=document.getElementById("field1");
+  const f2=document.getElementById("field2");
+  const f3=document.getElementById("field3");
+  const type=document.getElementById("type").value;
+
+  if(!f1 || !f2 || !f3){alert("Input fields missing"); return;}
+  const v1=f1.value.trim(), v2=f2.value.trim(), v3=f3.value.trim();
+  if(!v1){alert("Please fill at least the first field!"); return;}
+  const combined=v1+v2+v3;
+  try{ JsBarcode("#barcode", combined, {format:type,width:2,height:90,displayValue:true}); }
+  catch(e){alert("Failed to generate barcode: "+e.message);}
+});
+
+/* ----------------- Download Barcode ----------------- */
+document.getElementById("downloadBtn").addEventListener("click",()=>{
+  const svg=document.querySelector("#barcode");
+  if(!svg){alert("No barcode to download"); return;}
+  const data=new XMLSerializer().serializeToString(svg);
+  const blob=new Blob([data],{type:"image/svg+xml"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="barcode.svg";
+  a.click();
+});
+
+/* ----------------- Service Worker ----------------- */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 }
 </script>
+
 </body>
 </html>
