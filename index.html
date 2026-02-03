@@ -1,259 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barcodic – Advanced Barcode Generator</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Barcodic</title>
 
-<!-- Manifest -->
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#0f172a">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7f9cff">
 
-<!-- JsBarcode CDN -->
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 <style>
 :root{
-  --bg:#0f172a;
-  --glass:rgba(255,255,255,0.06);
-  --border:rgba(255,255,255,0.15);
-  --text:#e2e8f0;
-  --accent:#38bdf8;
-}
-body.light{
-  --bg:#f1f5f9;
-  --glass:rgba(0,0,0,0.05);
-  --border:rgba(0,0,0,0.1);
-  --text:#0f172a;
+  --bg1:#e6eef7;
+  --bg2:#ffffff;
+  --glass:rgba(255,255,255,0.35);
+  --text:#222;
+  --accent:#7f9cff;
 }
 body.dark{
-  --bg:#0f172a;
-  --glass:rgba(255,255,255,0.06);
-  --border:rgba(255,255,255,0.15);
-  --text:#e2e8f0;
+  --bg1:#1c1f2b;
+  --bg2:#2a2f40;
+  --glass:rgba(40,45,60,0.6);
+  --text:#eee;
 }
 body.amoled{
-  --bg:#000000;
-  --glass:rgba(255,255,255,0.08);
-  --border:rgba(255,255,255,0.2);
-  --text:#ffffff;
+  --bg1:#000;
+  --bg2:#0a0a0a;
+  --glass:rgba(15,15,15,0.75);
+  --text:#fff;
 }
-
 body{
   margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg);
+  font-family:system-ui;
+  background:linear-gradient(145deg,var(--bg1),var(--bg2));
+  display:flex;
+  justify-content:center;
+  padding:20px 10px;
   color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  flex-direction:column;
-  padding:10px;
-  box-sizing:border-box;
 }
-
-#splash{
-  position:fixed;
-  inset:0;
-  background:var(--bg);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:9999;
-}
-.loader{
-  width:150px;
-  height:6px;
-  background:#1e293b;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:15px;
-}
-.loader span{
-  display:block;
-  height:100%;
-  width:0;
-  background:var(--accent);
-  animation:load 2s linear forwards;
-}
-@keyframes load{to{width:100%}}
 
 .app{
   width:100%;
   max-width:420px;
-  padding:20px;
-  border-radius:20px;
+  backdrop-filter:blur(20px);
   background:var(--glass);
-  backdrop-filter:blur(16px);
-  border:1px solid var(--border);
-  box-shadow:6px 6px 20px #0a0f1f, -6px -6px 20px #1b243a;
-  text-align:center;
+  border-radius:25px;
+  padding:25px 20px;
+  box-shadow:8px 8px 20px rgba(0,0,0,0.25), -8px -8px 20px rgba(255,255,255,0.15);
   position:relative;
-  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
-.theme-toggle{
+h1{text-align:center;margin:0 0 15px;font-size:22px}
+label{font-size:13px;margin-top:8px;display:block}
+
+input, select, button{
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:12px;
+  border:none;
+  font-size:14px;
+  background:var(--glass);
+  color:var(--text);
+  box-shadow:4px 4px 8px rgba(0,0,0,0.2), -4px -4px 8px rgba(255,255,255,0.2);
+}
+
+button{
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+button:hover{transform:translateY(-2px)}
+
+canvas{
+  width:100%;
+  margin-top:15px;
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+}
+
+.themeToggle{
   position:absolute;
   top:15px;
   right:15px;
   width:46px;
   height:46px;
   border-radius:50%;
-  background:var(--glass);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  font-size:18px;
   cursor:pointer;
-  font-size:22px;
-  box-shadow:4px 4px 12px rgba(0,0,0,0.3), -4px -4px 12px rgba(255,255,255,0.1);
-  user-select:none;
 }
 
-input, select, button, label{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border-radius:12px;
-  border:none;
-  font-size:14px;
-  box-sizing:border-box;
-}
-input, select{
-  background:#1e293b;
-  color:white;
-}
-button{
-  background:#4ade80;
-  color:#000;
-  font-weight:bold;
-  cursor:pointer;
-}
-svg{
-  width:100%;
-  max-width:100%;
-  height:auto;
-  margin-top:15px;
-  background:white;
-  padding:10px;
-  border-radius:12px;
-}
-footer{
-  margin-top:18px;
-  font-size:12px;
-  opacity:0.7;
-}
+.warning{color:#ff4d4d;font-size:12px;margin-top:4px;display:none}
+footer{text-align:center;font-size:12px;margin-top:18px;opacity:.7}
+#printArea{display:none}
 </style>
 </head>
 
-<body>
-
-<div id="splash">
-  <h1>Barcodic</h1>
-  <div class="loader"><span></span></div>
-</div>
-
+<body class="dark">
 <div class="app">
-  <div class="theme-toggle" id="themeToggle">🌙</div>
+<button class="themeToggle" id="themeToggle">🌙</button>
+<h1>Barcodic</h1>
 
-  <h2>Barcode Generator</h2>
+<select id="type">
+<option value="EAN13">EAN-13</option>
+<option value="UPC">UPC-A</option>
+<option value="CODE128">Code 128</option>
+<option value="CODE39">Code 39</option>
+<option value="ITF14">ITF-14</option>
+<option value="Codabar">Codabar</option>
+</select>
 
-  <label id="label1">Field 1</label>
-  <input id="field1" placeholder="">
+<label id="label1"></label><input id="field1">
+<label id="label2"></label><input id="field2">
+<label id="label3"></label><input id="field3">
+<div id="validationMsg" class="warning"></div>
 
-  <label id="label2">Field 2</label>
-  <input id="field2" placeholder="">
+<h3>Barcode Settings</h3>
+<label>Bar Width</label><input type="number" id="barcodeWidth" value="2">
+<label>Bar Height</label><input type="number" id="barcodeHeight" value="90">
+<label>Font Size</label><input type="number" id="barcodeFontSize" value="16">
+<label>Show Text</label>
+<select id="displayValue"><option value="true">Yes</option><option value="false">No</option></select>
+<label>Bar Color</label><input type="color" id="barColor" value="#000000">
 
-  <label id="label3">Field 3</label>
-  <input id="field3" placeholder="">
+<button id="generateBtn">Generate Barcode</button>
+<button id="downloadPNG">Download PNG</button>
+<button id="downloadSVG">Download SVG</button>
+<button id="resetBtn">Reset</button>
 
-  <select id="type">
-    <option value="EAN13">EAN-13 (ISBN / Retail)</option>
-    <option value="EAN8">EAN-8 (Small Retail)</option>
-    <option value="UPC">UPC-A (Retail USA/Canada)</option>
-    <option value="UPCE">UPC-E (Compact Retail)</option>
-    <option value="CODE128">CODE-128 (Universal / Logistics)</option>
-    <option value="CODE39">CODE-39 (Industrial)</option>
-    <option value="ITF14">ITF-14 (Cartons / Shipping)</option>
-    <option value="MSI">MSI (Warehouse)</option>
-    <option value="Pharmacode">Pharmacode (Pharma Packaging)</option>
-    <option value="Codabar">Codabar (Libraries / Blood Banks)</option>
-  </select>
+<canvas id="barcodeCanvas"></canvas>
+<button id="printLabels">Print A4 Labels</button>
 
-  <button id="generateBtn">Generate Barcode</button>
-  <button id="downloadBtn">Download</button>
-
-  <svg id="barcode"></svg>
-
-  <footer>© Manik Roy 2026. All Rights Reserved.</footer>
+<footer>© Manik Roy 2026. All Rights Reserved.</footer>
 </div>
+
+<div id="printArea"></div>
 
 <script>
-window.onload = ()=>setTimeout(()=>document.getElementById("splash").style.display="none",2000);
-
-/* ----------------- Theme Toggle ----------------- */
-const themes=["light","dark","amoled"];
-let currentThemeIndex=1;
 const themeToggle=document.getElementById("themeToggle");
-function updateThemeIcon(){themeToggle.textContent=themes[currentThemeIndex]==="light"?"☀️":themes[currentThemeIndex]==="dark"?"🌙":"⚫";}
-function applyTheme(){document.body.classList.remove("light","dark","amoled");document.body.classList.add(themes[currentThemeIndex]);updateThemeIcon();}
-themeToggle.addEventListener("click",()=>{currentThemeIndex=(currentThemeIndex+1)%themes.length;applyTheme();});
+const themes=["light","dark","amoled"];
+let currentTheme=1;
+function applyTheme(){
+ document.body.className=themes[currentTheme];
+ themeToggle.textContent=currentTheme===0?"☀️":currentTheme===1?"🌙":"⚫";
+}
+themeToggle.onclick=()=>{currentTheme=(currentTheme+1)%3;applyTheme();}
 applyTheme();
 
-/* ----------------- Dynamic Labels ----------------- */
-const typeSelect=document.getElementById("type");
-typeSelect.addEventListener("change",updateLabels);
+const labelMap={
+ EAN13:["GS1 Prefix","Manufacturer Code","Product Code"],
+ UPC:["Number System Digit","Manufacturer Code","Product Code"],
+ CODE128:["Primary Data","Batch / Lot Number","Internal Reference"],
+ CODE39:["Product ID","Category Code","Serial Number"],
+ ITF14:["Packaging Indicator","Company Prefix","Item Reference"],
+ Codabar:["Organization Code","Category / Type","Serial Identifier"]
+};
+
+const label1=document.getElementById("label1");
+const label2=document.getElementById("label2");
+const label3=document.getElementById("label3");
+const typeSel=document.getElementById("type");
+const field1=document.getElementById("field1");
+const field2=document.getElementById("field2");
+const field3=document.getElementById("field3");
+
 function updateLabels(){
-  const type=typeSelect.value;
-  const l1=document.getElementById("label1");
-  const l2=document.getElementById("label2");
-  const l3=document.getElementById("label3");
-  const f1=document.getElementById("field1");
-  const f2=document.getElementById("field2");
-  const f3=document.getElementById("field3");
-  if(type==="EAN13"){l1.textContent="Prefix";l2.textContent="Group Identifier";l3.textContent="Publisher + Title Code";f1.placeholder="978 / 979";f2.placeholder="Language/Region";f3.placeholder="Publisher+Book";}
-  else if(type==="EAN8"){l1.textContent="Country Code";l2.textContent="Manufacturer Code";l3.textContent="Product Code";f1.placeholder="Country";f2.placeholder="Maker";f3.placeholder="Item";}
-  else if(type==="UPC"){l1.textContent="Number System";l2.textContent="Manufacturer";l3.textContent="Product Code";f1.placeholder="0 or 1";f2.placeholder="Company";f3.placeholder="Item";}
-  else if(type==="UPCE"){l1.textContent="Number System";l2.textContent="Manufacturer";l3.textContent="Product Code (Compressed)";f1.placeholder="0 or 1";f2.placeholder="Maker";f3.placeholder="Compressed Item";}
-  else if(type==="CODE128"){l1.textContent="Primary Data";l2.textContent="Batch No.";l3.textContent="Internal Ref";f1.placeholder="Main Data";f2.placeholder="Optional";f3.placeholder="Optional";}
-  else if(type==="CODE39"){l1.textContent="Product ID";l2.textContent="Category";l3.textContent="Serial Number";f1.placeholder="ID";f2.placeholder="Group";f3.placeholder="Serial";}
-  else if(type==="ITF14"){l1.textContent="Packaging Level";l2.textContent="Carton Code";l3.textContent="Item Ref";f1.placeholder="Level";f2.placeholder="Carton";f3.placeholder="Item";}
-  else if(type==="MSI"){l1.textContent="Warehouse Code";l2.textContent="Shelf Code";l3.textContent="Item Number";f1.placeholder="Warehouse";f2.placeholder="Shelf";f3.placeholder="Item";}
-  else if(type==="Pharmacode"){l1.textContent="Drug Code";l2.textContent="Batch";l3.textContent="Pack Ref";f1.placeholder="Drug ID";f2.placeholder="Batch";f3.placeholder="Pack";}
-  else if(type==="Codabar"){l1.textContent="Library/Blood Bank ID";l2.textContent="Category";l3.textContent="Serial";f1.placeholder="ID";f2.placeholder="Group";f3.placeholder="Serial";}
+ [label1,label2,label3].forEach((l,i)=>l.textContent=labelMap[typeSel.value][i]);
 }
+typeSel.addEventListener("change",()=>{updateLabels();generateBarcode();});
 updateLabels();
 
-/* ----------------- Barcode Generator ----------------- */
-document.getElementById("generateBtn").addEventListener("click",()=>{
-  const f1=document.getElementById("field1").value.trim();
-  const f2=document.getElementById("field2").value.trim();
-  const f3=document.getElementById("field3").value.trim();
-  const type=document.getElementById("type").value;
-  if(!f1){alert("Fill first field!"); return;}
-  try{JsBarcode("#barcode", f1+f2+f3, {format:type,width:2,height:90,displayValue:true});}
-  catch(e){alert("Error: "+e.message);}
-});
+const canvas=document.getElementById("barcodeCanvas");
+const ctx=canvas.getContext("2d");
+let svgString="";
 
-/* ----------------- Download ----------------- */
-document.getElementById("downloadBtn").addEventListener("click",()=>{
-  const svg=document.querySelector("#barcode");
-  if(!svg){alert("No barcode to download"); return;}
-  const data=new XMLSerializer().serializeToString(svg);
-  const blob=new Blob([data],{type:"image/svg+xml"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="barcode.svg";
-  a.click();
-});
+function validateData(type,data){
+ const msg=document.getElementById("validationMsg");
+ msg.style.display="none";
+ if(type==="EAN13"&&data.length!==13){msg.textContent="EAN-13 must be 13 digits";msg.style.display="block";return false;}
+ if(type==="UPC"&&data.length!==12){msg.textContent="UPC-A must be 12 digits";msg.style.display="block";return false;}
+ if(type==="ITF14"&&data.length!==14){msg.textContent="ITF-14 must be 14 digits";msg.style.display="block";return false;}
+ return true;
+}
 
-/* ----------------- Service Worker ----------------- */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(reg=>console.log('SW registered',reg)).catch(err=>console.log('SW failed',err)));
+function generateBarcode(){
+ const data=field1.value+field2.value+field3.value;
+ if(!field1.value){ctx.clearRect(0,0,canvas.width,canvas.height);return;}
+ if(!validateData(typeSel.value,data)){ctx.clearRect(0,0,canvas.width,canvas.height);return;}
+
+ canvas.width=canvas.clientWidth*2;
+ canvas.height=120*2;
+ ctx.setTransform(2,0,0,2,0,0);
+
+ JsBarcode(canvas,data,{
+  format:typeSel.value,
+  width:+barcodeWidth.value,
+  height:+barcodeHeight.value,
+  fontSize:+barcodeFontSize.value,
+  displayValue:displayValue.value==="true",
+  lineColor:barColor.value
+ });
+
+ const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+ JsBarcode(svg,data,{format:typeSel.value,lineColor:barColor.value});
+ svgString=new XMLSerializer().serializeToString(svg);
+}
+
+[field1,field2,field3,barcodeWidth,barcodeHeight,barcodeFontSize,displayValue,barColor]
+.forEach(el=>el.addEventListener("input",generateBarcode));
+generateBtn.onclick=generateBarcode;
+
+downloadPNG.onclick=()=>canvas.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="barcode.png";a.click();});
+downloadSVG.onclick=()=>{if(!svgString)return alert("Generate barcode first");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([svgString],{type:"image/svg+xml"}));a.download="barcode.svg";a.click();};
+
+resetBtn.onclick=()=>{
+ field1.value=field2.value=field3.value="";
+ document.getElementById("validationMsg").style.display="none";
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ canvas.width=0;
+ canvas.height=0;
+ svgString="";
+};
+
+printLabels.onclick=()=>{
+ const printArea=document.getElementById("printArea");
+ printArea.innerHTML="";
+ if(!canvas.width)return alert("Generate barcode first");
+ for(let i=0;i<18;i++){
+  const c=document.createElement("canvas");
+  c.width=canvas.width;c.height=canvas.height;
+  c.getContext("2d").drawImage(canvas,0,0);
+  printArea.appendChild(c);
+ }
+ window.print();
+};
+
+if("serviceWorker" in navigator){
+ navigator.serviceWorker.register("sw.js");
 }
 </script>
-
 </body>
 </html>
