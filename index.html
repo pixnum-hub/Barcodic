@@ -66,6 +66,7 @@ input, select, button{
   background:var(--glass);
   color:var(--text);
   box-shadow:4px 4px 8px rgba(0,0,0,0.2), -4px -4px 8px rgba(255,255,255,0.2);
+  box-sizing:border-box;
 }
 
 button{
@@ -99,6 +100,12 @@ canvas{
   cursor:pointer;
 }
 
+.fieldGroup{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
 .warning{color:#ff4d4d;font-size:12px;margin-top:4px;display:none}
 footer{text-align:center;font-size:12px;margin-top:18px;opacity:.7}
 #printArea{display:none}
@@ -119,9 +126,12 @@ footer{text-align:center;font-size:12px;margin-top:18px;opacity:.7}
 <option value="Codabar">Codabar</option>
 </select>
 
-<label id="label1"></label><input id="field1">
-<label id="label2"></label><input id="field2">
-<label id="label3"></label><input id="field3">
+<div class="fieldGroup">
+  <div><label id="label1"></label><input id="field1"></div>
+  <div><label id="label2"></label><input id="field2"></div>
+  <div><label id="label3"></label><input id="field3"></div>
+</div>
+
 <div id="validationMsg" class="warning"></div>
 
 <h3>Barcode Settings</h3>
