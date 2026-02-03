@@ -5,36 +5,122 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Barcodic – Book Barcode Generator</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
 <style>
-/* (Your full existing styles remain unchanged) */
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f172a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+.app{
+  width:95%;
+  max-width:420px;
+  padding:20px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  text-align:center;
+}
+input, select, button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:12px;
+  border:none;
+  font-size:14px;
+}
+button{
+  background:#22c55e;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+canvas{
+  margin-top:15px;
+  background:white;
+  padding:10px;
+  border-radius:12px;
+}
+.toggle{
+  position:absolute;
+  top:15px;
+  right:15px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#1e293b;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+}
+.light{
+  background:#f1f5f9;
+  color:#000;
+}
 </style>
 </head>
 
 <body>
+<div class="toggle" onclick="toggleMode()">🌓</div>
 
-<!-- (Your full existing body content remains unchanged) -->
+<div class="app">
+  <h2>Barcodic</h2>
+
+  <input id="title" placeholder="Book Title">
+  <input id="author" placeholder="Author">
+  <input id="isbn" placeholder="ISBN Number">
+
+  <select id="type">
+    <option value="EAN13">EAN-13 (ISBN)</option>
+    <option value="CODE128">CODE-128</option>
+    <option value="UPC">UPC</option>
+  </select>
+
+  <button onclick="generateBarcode()">Generate Barcode</button>
+
+  <svg id="barcode"></svg>
+</div>
 
 <script>
-/* Dark/Light Mode */
-function toggleMode(){document.body.classList.toggle("light");}
+function toggleMode(){
+  document.body.classList.toggle("light");
+}
 
-/* ---------- ALL YOUR EXISTING BARCODE + VALIDATION CODE STAYS HERE ---------- */
-/* (No change needed to generator logic) */
+function generateBarcode(){
+  const isbn = document.getElementById("isbn").value.trim();
+  const type = document.getElementById("type").value;
 
+  if(!isbn){
+    alert("Enter ISBN or code");
+    return;
+  }
 
-/* ✅ SERVICE WORKER — FIXED FOR GITHUB PAGES */
+  JsBarcode("#barcode", isbn, {
+    format: type,
+    lineColor: "#000",
+    width: 2,
+    height: 80,
+    displayValue: true
+  });
+}
+
+/* SAFE SERVICE WORKER */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/Barcodic/sw.js")
-      .then(() => console.log("Service Worker Registered"))
-      .catch(err => console.log("SW registration failed:", err));
+    navigator.serviceWorker.register("./sw.js")
+      .then(reg => console.log("SW registered", reg.scope))
+      .catch(err => console.log("SW failed", err));
   });
 }
 </script>
