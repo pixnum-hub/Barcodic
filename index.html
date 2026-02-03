@@ -46,7 +46,7 @@ body{
   backdrop-filter:blur(20px);
   background:var(--glass);
   border-radius:25px;
-  padding:25px 20px;
+  padding:25px 22px 30px 22px; /* extra side padding to keep barcode away from edges */
   box-shadow:8px 8px 20px rgba(0,0,0,0.25), -8px -8px 20px rgba(255,255,255,0.15);
   position:relative;
   display:flex;
@@ -85,12 +85,15 @@ button:hover{transform:translateY(-2px)}
 }
 
 .canvasWrap{
-  margin-top:15px;
-  border-radius:12px;
-  background:#fff;
-  padding:12px;
-  box-shadow:inset 2px 2px 6px rgba(0,0,0,0.08),
-             inset -2px -2px 6px rgba(255,255,255,0.6);
+  margin-top:18px;
+  padding:16px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.85);
+  box-shadow:
+    inset 3px 3px 8px rgba(0,0,0,0.08),
+    inset -3px -3px 8px rgba(255,255,255,0.7);
+  width:100%;
+  box-sizing:border-box;
 }
 
 canvas{
@@ -98,7 +101,9 @@ canvas{
   height:auto;
   display:block;
   background:#fff;
-  border-radius:8px;
+  border-radius:12px;
+  padding:10px;
+  box-sizing:border-box;
 }
 
 .themeToggle{
