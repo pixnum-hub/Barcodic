@@ -1,33 +1,34 @@
-const CACHE_NAME = "barcodic-v1";
-const ASSETS = [
+const CACHE_NAME = "barcodic-cache-v1";
+
+const FILES_TO_CACHE = [
   "./",
   "./index.html",
-  "./manifest.json",
-  "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"
+  "https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"
 ];
 
-// Install SW and cache assets
+// Install
 self.addEventListener("install", event => {
-  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
   );
+  self.skipWaiting();
 });
 
-// Activate SW and remove old caches
+// Activate
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
         keys.map(key => {
-          if(key !== CACHE_NAME) return caches.delete(key);
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       )
     )
   );
+  self.clients.claim();
 });
 
-// Fetch from cache first, fallback to network
+// Fetch (cache first, then network)
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(response => response || fetch(event.request))
