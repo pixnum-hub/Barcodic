@@ -1,12 +1,21 @@
 {
   "name": "Barcodic",
   "short_name": "Barcodic",
-  "start_url": "/YOUR-REPO-NAME/index.html",
+  "start_url": "/Barcodic/index.html",
+  "scope": "/Barcodic/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "icons": [
-    { "src": "/YOUR-REPO-NAME/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/YOUR-REPO-NAME/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/Barcodic/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/Barcodic/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
